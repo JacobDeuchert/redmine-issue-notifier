@@ -11,8 +11,9 @@ Only works on Windows.
 
 ## Installation and usage
 
-1. Download executable from [release page](https://github.com/JacobDeuchert/redmine-issue-notifier/releases).
-2. Add executable to your startup folder (e.g. C:\Users\YourUserName\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup).
+1. Download zip archive from [release page](https://github.com/JacobDeuchert/redmine-issue-notifier/releases).
+2. Extract the archive.
+3. Add link to executable (redmine-notifier.exe)  to your startup folder (e.g. C:\Users\YourUserName\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup).
 3. Run executable
 4. Open application from tray icon
 5. Provide url and API key to the application.
