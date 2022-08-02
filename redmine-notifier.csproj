@@ -17,4 +17,12 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.5" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.0.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\*.*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+
 </Project>
