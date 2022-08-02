@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:redmine_notifier.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="300"
+        Width="280" 
+        Height="300"
+        x:Class="redmine_notifier.Views.MainWindow"
+        Icon="/Assets/redmine-logo.ico"
+        Title="redmine_notifier"
+        Background="#2C313C"
+        TransparencyLevelHint="AcrylicBlur"
+        HasSystemDecorations="false"
+        >
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+   <StackPanel Margin="15">
+     <StackPanel Orientation="Horizontal">
+       <Image Source="/Assets/redmine-logo.ico" Width="30" Height="30"></Image>
+       <TextBlock VerticalAlignment="Center" Padding="10, 0, 0, 0" FontSize="20" FontWeight="Bold">Redmine Notifier</TextBlock>
+       <Button Command="{Binding onCloseBtnClicked}" VerticalAlignment="Top" Background="#2C313C" Margin="10, 0, 0, 0" HorizontalAlignment="Right"> <Image  Source="/Assets/close.png" Width="25" Height="25"></Image></Button>
+     </StackPanel>
+
+     <Rectangle Fill="#2C313C" Height="20"/>
+     <TextBox Text="{Binding RedmineUrl}" Height="40" Watermark="Redmine URL" />
+     <Rectangle Fill="#2C313C" Height="20"/>
+     <TextBox Text="{Binding ApiKey}" Height="40" Watermark="API Key" />
+    <Rectangle Fill="#2C313C" Height="64"/>
+     <Button HorizontalAlignment="Stretch" Command="{Binding onSaveBtnClicked}" HorizontalContentAlignment="Center" >Save</Button>
+</StackPanel>
+
+</Window>
