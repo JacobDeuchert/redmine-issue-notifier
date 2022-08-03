@@ -11,6 +11,15 @@ internal static class WindowExtensions
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool SetForegroundWindow(IntPtr hWnd);
 
+    [DllImport("user32.dll")]
+    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+    static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+    private const int SWP_NOSIZE = 0x0001;
+    private const int SWP_NOZORDER = 0x0004;
+    private const int SWP_SHOWWINDOW = 0x0040;
+    private const int SWP_NOMOVE = 0x0002;
+
     public static void ActivateWorkaround(this Window window)
         {
             if (ReferenceEquals(window, null)) throw new ArgumentNullException(nameof(window));
@@ -33,6 +42,7 @@ internal static class WindowExtensions
             try
             {
                 SetForegroundWindow(handle);
+                SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
             }
             catch
             {
