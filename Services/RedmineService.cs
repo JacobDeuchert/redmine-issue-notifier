@@ -15,7 +15,7 @@ namespace redmine_notifier.Services
 
         private CancellationTokenSource currentCancellationToken;
 
-        private DateTime lastChecked;
+        private DateTime lastIssue;
 
         private NotificationService notificationService;
 
@@ -23,7 +23,7 @@ namespace redmine_notifier.Services
 
         public RedmineService(NotificationService notificationService, LoggingService loggingService)
         {
-            lastChecked = DateTime.UtcNow;
+            lastIssue = DateTime.UtcNow;
             
             this.notificationService = notificationService;
             this.loggingService = loggingService;
@@ -83,12 +83,12 @@ namespace redmine_notifier.Services
 
         private async Task checkForNewIssues(Configuration configuration, User currentUser)
         {
-            var issues = await getIssues(configuration, lastChecked);
-
-            lastChecked = DateTime.UtcNow;
+            var issues = await getIssues(configuration, lastIssue);
 
             if (issues != null && issues.Any(x => x.author.id != currentUser.id))
             {
+
+                lastIssue = DateTime.UtcNow;
                 var issue = issues.FirstOrDefault(x => x.author.id != currentUser.id);
                 notificationService.ShowIssuesNotification(issue);
             }            
@@ -96,7 +96,7 @@ namespace redmine_notifier.Services
 
 
 
-        private async Task<List<Issue>> getIssues(Configuration configuration, DateTime? lastRequested = null)
+        private async Task<List<Issue>> getIssues(Configuration configuration, DateTime? from = null)
         {
             try
             {
@@ -104,11 +104,11 @@ namespace redmine_notifier.Services
                 {
                     httpClient.DefaultRequestHeaders.Add("X-Redmine-API-Key", configuration.ApiKey);
 
-                    var issuesUrl = configuration.RedmineUrl + "/issues.json";
+                    var issuesUrl = validateUrl(configuration.RedmineUrl) + "/issues.json";
 
-                    if (lastRequested.HasValue)
+                    if (from.HasValue)
                     {
-                        var formattedDate = lastRequested.Value.ToString(@"yyyy-MM-dd\THH:mm:ss\Z");
+                        var formattedDate = from.Value.ToString(@"yyyy-MM-dd\THH:mm:ss\Z");
                         issuesUrl += "?created_on=>=" + formattedDate;
                     }
 
@@ -134,7 +134,7 @@ namespace redmine_notifier.Services
                 using (var httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Add("X-Redmine-API-Key", configuration.ApiKey);
-                    var userUrl = configuration.RedmineUrl + "/users/current.json";
+                    var userUrl = validateUrl(configuration.RedmineUrl) + "/users/current.json";
                     var response = await httpClient.GetAsync(userUrl);
                     
                     string userResponseJSON = await response.Content.ReadAsStringAsync();
@@ -148,6 +148,20 @@ namespace redmine_notifier.Services
                 throw new Exception("Failed to get own User: " + e);
             }
             
+        }
+
+        private string validateUrl(string url)
+        {
+            if (!url.StartsWith("http://") || url.StartsWith("https://"))
+            {
+                url = "http://" + url;
+            }
+        
+            if (url.EndsWith("/"))
+            {
+                url = url.Substring(0, url.Length - 1);
+            }
+            return url;
         }
 
 
